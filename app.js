@@ -10,6 +10,9 @@ const connection = mysql.createConnection({
     database: "testdb"
 });
 
+var blabla = "";
+var chill = "";
+
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({
