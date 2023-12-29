@@ -10,9 +10,6 @@ const connection = mysql.createConnection({
     database: "testdb"
 });
 
-var blabla = "";
-var chill = "";
-
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({
@@ -31,7 +28,7 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-app.post('/api/insert', function(req, res) {
+app.post('/api/users/insert', function(req, res) {
     var sql = "INSERT "
             + "INTO users(name, password, email, ten, sdt, cmnd, ngaysinh, thangsinh, namsinh, khoi_id, cap1, cap2) "
             + "VALUES('"
@@ -85,7 +82,7 @@ app.post('/api/insert', function(req, res) {
     });
 });
 
-app.post('/api/edit', (req, res) => {
+app.post('/api/users/edit', (req, res) => {
     var sql = "UPDATE users SET "
             + "name='" + req.body.name + "',"
             + "password='" + req.body.password + "',"
@@ -116,7 +113,7 @@ app.post('/api/edit', (req, res) => {
     });
 });
 
-app.post('/api/delete', (req, res) => {
+app.post('/api/users/delete', (req, res) => {
     var sql = "DELETE FROM users "
             + "WHERE id='" + req.body.id + "'";
     connection.query(sql, function(err, results) {
@@ -129,6 +126,64 @@ app.post('/api/delete', (req, res) => {
             }
             res.json({users: results});
         })
+    });
+});
+
+app.get('/api/questions', (req, res) => {
+    var sql = "SELECT questions.*, subjects.id, subjects.name AS subject FROM questions, subjects WHERE questions.subject_id=subjects.id";
+    connection.query(sql, function(err, results) {
+        if (err) throw err;
+        res.json({questions: results});
+    });
+});
+
+app.post('/api/questions/insert', function(req, res) {
+    var sql = "INSERT "
+            + "INTO questions(question, option1, option2, option3, option4, answer, subject_id) "
+            + "VALUES('"
+            + req.body.question + "','" 
+            + req.body.option1 + "','" 
+            + req.body.option2 + "','"
+            + req.body.option3 + "','"
+            + req.body.option4 + "','"
+            + req.body.answers + "','"
+            + req.body.subject_id + "')";
+    connection.query(sql, function (err, results) {
+        if(err) throw err;
+        res.json({questions: results});
+    });
+});
+
+app.post('/api/questions/edit', (req, res) => {
+    var sql = "UPDATE questions SET "
+            + "question='" + req.body.question + "',"
+            + "option1='" + req.body.option1 + "',"
+            + "option2='" + req.body.option2 + "',"
+            + "option3='" + req.body.option3 + "',"
+            + "option4='" + req.body.option4 + "',"
+            + "answers='" + req.body.answers + "',"
+            + "subject_id='" + req.body.subject_id + "'"
+            + "WHERE id='" + req.body.id + "'";
+    connection.query(sql, function(err, results) {
+        if (err) throw err;
+        res.json({questions: results});
+    });
+});
+
+app.post('/api/questions/delete', (req, res) => {
+    var sql = "DELETE FROM questions "
+            + "WHERE id='" + req.body.id + "'";
+    connection.query(sql, function(err, results) {
+        if (err) throw err;
+        res.json({questions: results});
+    });
+});
+
+app.get('/api/answers', (req, res) => {
+    var sql = "SELECT * FROM answers";
+    connection.query(sql, function(err, results) {
+        if (err) throw err;
+        res.json({answers: results});
     });
 });
 

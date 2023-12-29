@@ -50,7 +50,7 @@ class App extends Component {
       name: user.name,
       password: user.password,
       email: user.email,
-      role: user.role
+      role: user.roles.name
     });
   };
 
@@ -71,20 +71,21 @@ class App extends Component {
       role: this.state.role
     };
 
-    axios.post('/api/edit', userUpdate)
+    axios.post('/api/users/edit', userUpdate)
       .then(res => {
         let key = this.state.id;
         this.setState(prevState => ({
           users: prevState.users.map(
             elem => elem.id === key? {
-              ...elem,
               name: this.state.name,
               password: this.state.password,
               email: this.state.email,
-              role: this.state.role
+              roles: {
+                name: this.state.role
+              }
             }: elem
           )
-        }))
+        }));
       })
       .catch(error => console.log(error));
   };
@@ -100,7 +101,7 @@ class App extends Component {
       role: this.state.role
     };
 
-    axios.post('/api/insert', newUser)
+    axios.post('/api/users/insert', newUser)
       .then(res => {
         let users = this.state.users;
         users = [newUser,...users];
@@ -114,7 +115,7 @@ class App extends Component {
       id: user.id
     };
     
-    axios.post('/api/delete', newsId)
+    axios.post('/api/users/delete', newsId)
       .then(res => {
         this.setState(prevState => ({
           users: prevState.users.filter(elem => elem.id !== user.id)
@@ -177,7 +178,7 @@ class App extends Component {
         <ul>
           {this.state.users.map(user => (
             <li key={user.id}>
-              <h2>{user.name} ({user.role})</h2>
+              <h2>{user.name} ({user.roles.name})</h2>
               <div>{user.email}</div>
               <button onClick={() => this.openModal(user)}>Edit</button>
               <button onClick={() => this.handleDelete(user)}>Delete</button>
